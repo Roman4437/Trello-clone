@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .bg-trello-gradient {
+    @apply absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-cyan-500 to-trello-blue rounded-md filter blur-3xl opacity-50 -z-50
+  }
+}
