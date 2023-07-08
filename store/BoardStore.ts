@@ -41,50 +41,50 @@ export const useBoardStore = create<BoardState>((set, get) => ({
           fileId: uploadedImage.$id
         }
       }
-
-      const { $id } = await database.createDocument(
-        process.env.NEXT_PUBLIC_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID!,
-        ID.unique(),
-        {
-          title: todo,
-          status: columnId,
-          email: email,
-          ...(file && { image: JSON.stringify(file) })
-        }
-      )
-
-      set(state => {
-        const newColumns = new Map(state.board.columns)
-
-        const newTodo: Todo = {
-          $id,
-          $createdAt: new Date().toISOString(),
-          title: todo,
-          status: columnId,
-          ...(file && { image: file })
-        }
-
-        const column = newColumns.get(columnId)
-
-        const body = {
-          id: columnId,
-          todos: [newTodo]
-        }
-
-        if (column) {
-          newColumns.set(columnId, body)
-        } else {
-          newColumns.get(columnId)?.todos.push(newTodo)
-        }
-
-        return {
-          board: {
-            columns: newColumns
-          }
-        }
-      })
     }
+
+    const { $id } = await database.createDocument(
+      process.env.NEXT_PUBLIC_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID!,
+      ID.unique(),
+      {
+        title: todo,
+        status: columnId,
+        email: email,
+        ...(file && { image: JSON.stringify(file) })
+      }
+    )
+
+    set(state => {
+      const newColumns = new Map(state.board.columns)
+
+      const newTodo: Todo = {
+        $id,
+        $createdAt: new Date().toISOString(),
+        title: todo,
+        status: columnId,
+        ...(file && { image: file })
+      }
+
+      const column = newColumns.get(columnId)
+
+      const body = {
+        id: columnId,
+        todos: [newTodo]
+      }
+
+      if (!column) {
+        newColumns.set(columnId, body)
+      } else {
+        newColumns.get(columnId)?.todos.push(newTodo)
+      }
+
+      return {
+        board: {
+          columns: newColumns
+        }
+      }
+    })
   },
 
   deleteTask: async (taskIndex: number, todo: Todo, id: ColumnType) => {
